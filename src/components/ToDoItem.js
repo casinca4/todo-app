@@ -4,7 +4,7 @@ function ToDoItem() {
   return (
     <div className="item">
       <p>Clean your face</p>
-      <button>CHECK</button>
+      <button className="btn">CHECK</button>
     </div>
   );
 }

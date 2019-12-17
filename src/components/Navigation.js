@@ -1,9 +1,10 @@
 import React from 'react';
+import logo from '../images/logo.png';
 
 function Navigation() {
   return (
     <nav>
-      <p>logo</p>
+      <img src={logo}></img>
     </nav>
   );
 }
