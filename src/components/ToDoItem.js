@@ -1,9 +1,11 @@
 import React from 'react';
 
-function ToDoItem() {
+function ToDoItem(props) {
+  // props.text
+  // props.status
   return (
     <div className="item">
-      <p>Clean your face</p>
+      <p>{props.text}</p>
       <button className="btn">CHECK</button>
     </div>
   );

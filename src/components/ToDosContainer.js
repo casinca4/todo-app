@@ -1,32 +1,29 @@
 import React from 'react';
 import ToDoItem from './ToDoItem';
 
-function ToDosContainer() {
-    const data = [                                  // wir scheren uns nicht darum, woher die Daten kommen
-        { text: 'Do your thing', status: false, id: 146587 },
-        { text: 'Be yourself', status: false, id: 456845 },
-        { text: 'Explain something', status: false, id: 324864 },
-        { text: 'Be a dog', status: false, id: 798151 },            // wenn die vier entfernt, verschwindet der container unten
-    ]
-
+function ToDosContainer(props) {
+    const data = props.items;
+  
     // so werden Listen gemacht
     const todoItems = data.map(el => {      // el wird noch nicht benutzt
-        return <ToDoItem key={el.id}></ToDoItem>           // nicht mehr $
+        return <ToDoItem key={el.id} text={el.text} status={el.status}></ToDoItem>           // nicht mehr $
     });
 
     console.log(todoItems);
 
     return (
         <div className="todos-container">
-            {data.length > 0 && (
+            {data.length > 0 && (               // wenn wahr, dann zeigt TODOS an; wenn nicht, dann nichts anzeigen
                 <div className="todos">
                     <h5>TODOS</h5>
                     {/* <ToDoItem></ToDoItem>   // ist eins von den vier items, gibt sie automatisch wieder */}
-                    {todoItems}               // z. 12 
-                </div>
+                    {todoItems}           
+                </div>  
             )}
         </div>
     );
 }
 
 export default ToDosContainer;
+
+// {todoItems}   bezieht sich auf const todoItems
