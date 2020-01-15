@@ -32,7 +32,7 @@ class ToDonesContainer extends React.Component {
     const todoneItems = data.map(el => {
       return (
         <ToDoItem
-          key={el.id}
+          key={el._id}
           data={el}
           handleUpdate={this.updateItem}
         ></ToDoItem>
