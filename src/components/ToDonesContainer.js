@@ -5,7 +5,7 @@ import ToDoItem from './ToDoItem';
 //   const data = props.items;
 
 //   const todoneItems = data.map(el => {
-//     return <ToDoItem key={el.id} text={el.text} status={el.status}></ToDoItem>;
+//     return <ToDoItem key={el.id} task={el.task} done={el.done}></ToDoItem>;
 //   });
 
 //   return (
@@ -43,7 +43,7 @@ class ToDonesContainer extends React.Component {
       <div className="todones-container">
         {data.length > 0 && (
           <div className="todones">
-            <h5>BACKLOG</h5>
+            <h5>DONE</h5>
             {todoneItems}
           </div>
         )}

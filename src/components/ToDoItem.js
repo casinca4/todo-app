@@ -9,9 +9,9 @@ const ToDoItem = props => {
 
   return (
     <div className="item">
-      <p>{props.data.text}</p>
+      <p>{props.data.task}</p>
       <button className="btn" onClick={updateItem}>
-        {props.data.status ? '☑' : '☐'}
+        {props.data.done ? '☑' : '☐'}
       </button>
     </div>
   );
@@ -19,11 +19,11 @@ const ToDoItem = props => {
 
 
 // function ToDoItem(props) {
-//   // props.text
-//   // props.status
+//   // props.task
+//   // props.done
 //   return (
 //     <div className="item">
-//       <p>{props.text}</p>
+//       <p>{props.task}</p>
 //       <button className="btn">CHECK</button>
 //     </div>
 //   );

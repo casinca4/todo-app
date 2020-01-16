@@ -3,23 +3,23 @@ import FormContainer from './FormContainer';
 import ToDosContainer from './ToDosContainer';
 import ToDonesContainer from './ToDonesContainer';
 import Spinner from './Spinner';
-
+import friend from '../images/friend.jpeg';
 
 // function MainContainer() {
 //   const data = [
-//     { text: 'Do your thing', status: false, id: 1407892 },
-//     { text: 'Be yourself', status: true, id: 1467892 },
-//     { text: 'Explain something', status: false, id: 5436436 },
-//     { text: 'Be a dog', status: true, id: 4363434 },
-//     { text: 'Bite a tree', status: false, id: 1411892 },
-//     { text: 'Plant a tree', status: false, id: 1117892 },
-//     { text: 'Save the world', status: true, id: 5436222 },
-//     { text: 'Achieve world peace', status: false, id: 4363333 }
+//     { task: 'Do your thing', done: false, id: 1407892 },
+//     { task: 'Be yourself', done: true, id: 1467892 },
+//     { task: 'Explain something', done: false, id: 5436436 },
+//     { task: 'Be a dog', done: true, id: 4363434 },
+//     { task: 'Bite a tree', done: false, id: 1411892 },
+//     { task: 'Plant a tree', done: false, id: 1117892 },
+//     { task: 'Save the world', done: true, id: 5436222 },
+//     { task: 'Achieve world peace', done: false, id: 4363333 }
 //   ];
 
-//   const todos = data.filter(el => !el.status);
-//   const todones = data.filter(el => el.status); 
-//   // const todos = data.filter(el => {if (!el.status) return el;});
+//   const todos = data.filter(el => !el.done);
+//   const todones = data.filter(el => el.done); 
+//   // const todos = data.filter(el => {if (!el.done) return el;});
 
 //   return (
 //     <main className="main-container">
@@ -37,14 +37,14 @@ import Spinner from './Spinner';
 //     console.log('constructor RUN');
 //     this.state = {
 //       items: [
-//         { text: 'Do your thing', status: false, id: 1407892 },
-//         { text: 'Be yourself', status: true, id: 1467892 },
-//         { text: 'Explain something', status: false, id: 5436436 },
-//         { text: 'Be a dog', status: true, id: 4363434 },
-//         { text: 'Bite a tree', status: false, id: 1411892 },
-//         { text: 'Plant a tree', status: false, id: 1117892 },
-//         { text: 'Save the world', status: true, id: 5436222 },
-//         { text: 'Achieve world peace', status: false, id: 4363333 }
+//         { task: 'Do your thing', done: false, id: 1407892 },
+//         { task: 'Be yourself', done: true, id: 1467892 },
+//         { task: 'Explain something', done: false, id: 5436436 },
+//         { task: 'Be a dog', done: true, id: 4363434 },
+//         { task: 'Bite a tree', done: false, id: 1411892 },
+//         { task: 'Plant a tree', done: false, id: 1117892 },
+//         { task: 'Save the world', done: true, id: 5436222 },
+//         { task: 'Achieve world peace', done: false, id: 4363333 }
 //       ]
 //     };
 //   }
@@ -54,28 +54,51 @@ class MainContainer extends React.Component {
     super(props);
     this.state = {
       items: [],
-      loading: true
+      loading: true,
+      feedback: false,
+      showFriend: false
     };
   }
 
   async componentDidMount() {
-    const url = `https://ds-todo-api.now.sh/todos`;
+    const url = `https://todolist.platteantje.now.sh/tasks`;
 
     // fetch(url).then(response => {
     //   response.json().then(data => {
     //     this.setState({ items: data });
     //   });
     // });
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
 
-    const response = await fetch(url);
-    const data = await response.json();
-    this.setState({ items: data, loading: false });   //  get todos back and load into app; loading button hört auf
+      if (data.length === 0)
+        {
+          this.setState({
+          items: data,
+          loading: false,   //  get todos back and load into app; loading button hört auf
+          feedback: false,
+          showFriend: true
+        });
+      }
+      else {
+        this.setState({
+          items: data,
+          loading: false,
+          feedback: false,
+          showFriend: false
+        });
+      }
+    } catch (error) {
+      this.setState({ feedback: true });
+    }
   }
 
 
   handleUpdate = async item => {                // frontend part
-    const url = `https://ds-todo-api.now.sh/todos/${item._id}`;
-    const status = !item.status;
+    const url = `https://todolist.platteantje.now.sh/tasks/${item._id}`;
+    const done = !item.done;
+    this.setState({ loading: true });
 
     try {
       const response = await fetch(url, {
@@ -83,78 +106,106 @@ class MainContainer extends React.Component {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ done })
       });
       const data = await response.json();
       const items = this.state.items;
       const updatedItems = items.map(el => {
         if (item._id === el._id) {         // ?? ganze Kette,   in todoscontainer, kommt von todoitem, bei onclick
-          el.status = !el.status;  // wie toggle
+          el.done = !el.done;  // wie toggle
         }
 
         return el;
       });
 
-      this.setState({ items: updatedItems });
+      this.setState({
+        items: updatedItems,
+        loading: false,
+        feedback: false
+      });
     } catch (error) {
-      console.log(`EEEERROR: `, error);
+      this.setState({ feedback: true });
     }
   };
 
 
-  handleAddTodo = value => {
-    const newItem = {
-      text: value,
-      status: false,
-      id: new Date().getTime()
-    };
+  handleAddTodo = async value => {
+    const url = `https://todolist.platteantje.now.sh/tasks`;
+    this.setState({ loading: true });
 
-    this.setState({ items: [...this.state.items, newItem] });   // spread: newItem geht in this.state.items-array
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: value, done: false, owner: 'Swantje' })
+      });
+      const item = await response.json();
+      this.setState({
+        items: [...this.state.items, item],       // spread: newItem geht in this.state.items-array
+        feedback: false,
+        showFriend: false,
+        loading: false
+      });
+    } catch (error) {
+      this.setState({ feedback: true });
+    }
   };
 
-  // componentDidMount() {
-  //   console.log('componentDidMount RUN');
-  //   const url = 'https://ds-todo-api.now.sh/todos';
 
-  // }
+// componentDidMount() {
+//   console.log('componentDidMount RUN');
+//   const url = 'https://ds-todo-api.now.sh/todos';
 
-  // componentDidUpdate() {
-  //   console.log('componentDidUpdate RUN');
-  // }
+// }
 
-  // componentWillUnmount() {
-  //   debugger;
-  // }
+// componentDidUpdate() {
+//   console.log('componentDidUpdate RUN');
+// }
 
-  render() {
-    console.log('render RUN');
+// componentWillUnmount() {
+//   debugger;
+// }
 
-    const data = this.state.items;
-    const todos = data.filter(el => !el.status);
-    const todones = data.filter(el => el.status);
-    // const todos = data.filter(el => {if (!el.status) return el;});
+render() {
+  console.log('render RUN');
+
+  const data = this.state.items;
+  const todos = data.filter(el => !el.done);
+  const todones = data.filter(el => el.done);
+  // const todos = data.filter(el => {if (!el.done) return el;});
 
 
-    return (
-      <main className="main-container">
-        <FormContainer addTodo={this.handleAddTodo}></FormContainer>
-        {this.state.loading ? (
-          <Spinner></Spinner>
-        ) : (
-            <span>
-              <ToDosContainer
-                items={todos}
-                updateFromChild={this.handleUpdate}
-              ></ToDosContainer>
-              <ToDonesContainer
-                items={todones}
-                updateFromChild={this.handleUpdate}
-              ></ToDonesContainer>
-            </span>
-          )}
-      </main>
-    );
-  }
+  return (
+    <main className="main-container">
+      <FormContainer addTodo={this.handleAddTodo}></FormContainer>
+      <div className="feedback">
+        {this.state.feedback && (
+          <small>Oops, our cat broke the internet. Please try again...</small>
+        )}
+      </div>
+      {this.state.loading && <Spinner></Spinner>}
+      {!this.state.showFriend ? (             // it's not ...
+        <span>
+          <ToDosContainer
+            items={todos}
+            updateFromChild={this.handleUpdate}
+          ></ToDosContainer>
+          <ToDonesContainer
+            items={todones}
+            updateFromChild={this.handleUpdate}
+          ></ToDonesContainer>
+        </span>
+      ) : (
+        <div className="empty-screen">
+          <img src={friend}></img>
+          <p>Use the form to create a new todo!</p>
+        </div>
+      )}
+    </main>
+  );
+}
 }
 
 
@@ -162,15 +213,15 @@ export default MainContainer;
 
 // updateFromChild: property
 
-// el.status = !el.status; from true to false
+// el.done = !el.done; from true to false
 
-// status: false --> it's not done yet
+// done: false --> it's not done yet
 
 // const braucht man nicht, wenn function does not return anything
 
-// status is boolean
+// done is boolean
 
-// status: false,          not done, deswegen false
+// done: false,          not done, deswegen false
 
 // new Date: fake id brauchten wir, irgendwas
 

@@ -7,7 +7,7 @@ import friend from '../images/friend.jpeg';
 
 //     // so werden Listen gemacht
 //     const todoItems = data.map(el => {      // el wird noch nicht benutzt
-//         return <ToDoItem key={el.id} text={el.text} status={el.status}></ToDoItem>           
+//         return <ToDoItem key={el.id} task={el.task} done={el.done}></ToDoItem>           
 //     });
 
 //     console.log(todoItems);
@@ -36,7 +36,7 @@ class ToDosContainer extends React.Component {
     const todoItems = data.map(el => {
       return (
         <ToDoItem
-          key={el._id}                          // von mongoose, s. Link
+          key={el._id}                          // _ von mongoose, s. Link
           data={el}                               // look in the database
           handleUpdate={this.updateItem}
         ></ToDoItem>
@@ -45,18 +45,12 @@ class ToDosContainer extends React.Component {
 
     return (
       <div className="todos-container">
-        {data.length > 0 ? (                    // 0 um etwas zu haben, brauchen wir in todonescontainer
+        {data.length > 0 && (                    // 0 um etwas zu haben, brauchen wir in todonescontainer
           <div className="todos">
             <h5>TODOS</h5>
             {todoItems}
           </div>
-        ) : (
-            <div className="todos">
-              <h5>TODOS</h5>
-              <img src={friend}></img>
-              <p>Use the form to create a new todo!</p>
-            </div>
-          )}
+        )} 
       </div>
     );
   }
