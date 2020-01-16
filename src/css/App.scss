@@ -12,6 +12,12 @@ body, html {
   background: #6C8670;
 }
 
+.feedback {
+  color: red;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
 .app {
     .intro-text {
       font-family: monospace;
@@ -19,7 +25,6 @@ body, html {
     }
   }
 
- 
 
   input {
     padding: 5px;
@@ -50,4 +55,17 @@ body, html {
     height: 30px;
     margin-left: 30px;
     margin-top: 15px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    background-color: yellow;
+    border-radius: 50% 10%;
+    margin: 100px auto;
+    -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+    animation: sk-rotateplane 1.2s infinite ease-in-out;
+    position: absolute;
+    top: 0;
+    right: 10px;
   }

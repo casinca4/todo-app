@@ -3,15 +3,15 @@ import React from 'react';
 const ToDoItem = props => {
   function updateItem(e) {
     e.preventDefault();
-    const id = props.data.id;
-    props.handleUpdate(id);
+    const item = props.data;
+    props.handleUpdate(item);
   }
 
   return (
     <div className="item">
       <p>{props.data.text}</p>
       <button className="btn" onClick={updateItem}>
-        {props.data.status ? '↻' : '✓'}
+        {props.data.status ? '☑' : '☐'}
       </button>
     </div>
   );

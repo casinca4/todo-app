@@ -26,8 +26,8 @@ import friend from '../images/friend.jpeg';
 // }
 
 class ToDosContainer extends React.Component {
-  updateItem = id => {
-    this.props.updateFromChild(id);
+  updateItem = item => {
+    this.props.updateFromChild(item);
   };
 
   render() {
@@ -36,8 +36,8 @@ class ToDosContainer extends React.Component {
     const todoItems = data.map(el => {
       return (
         <ToDoItem
-          key={el._id}
-          data={el}
+          key={el._id}                          // von mongoose, s. Link
+          data={el}                               // look in the database
           handleUpdate={this.updateItem}
         ></ToDoItem>
       );
@@ -45,7 +45,7 @@ class ToDosContainer extends React.Component {
 
     return (
       <div className="todos-container">
-        {data.length > 0 ? (
+        {data.length > 0 ? (                    // 0 um etwas zu haben, brauchen wir in todonescontainer
           <div className="todos">
             <h5>TODOS</h5>
             {todoItems}

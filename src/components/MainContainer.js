@@ -69,21 +69,36 @@ class MainContainer extends React.Component {
 
     const response = await fetch(url);
     const data = await response.json();
-    this.setState({ items: data, loading: false });
+    this.setState({ items: data, loading: false });   //  get todos back and load into app; loading button hört auf
   }
 
 
-  handleUpdate = id => {
-    const items = this.state.items;
-    const updatedItems = items.map(el => {
-      if (id === el.id) {
-        el.status = !el.status;
-      }
+  handleUpdate = async item => {                // frontend part
+    const url = `https://ds-todo-api.now.sh/todos/${item._id}`;
+    const status = !item.status;
 
-      return el;
-    });
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+      });
+      const data = await response.json();
+      const items = this.state.items;
+      const updatedItems = items.map(el => {
+        if (item._id === el._id) {         // ?? ganze Kette,   in todoscontainer, kommt von todoitem, bei onclick
+          el.status = !el.status;  // wie toggle
+        }
 
-    this.setState({ items: updatedItems });
+        return el;
+      });
+
+      this.setState({ items: updatedItems });
+    } catch (error) {
+      console.log(`EEEERROR: `, error);
+    }
   };
 
 
@@ -94,7 +109,7 @@ class MainContainer extends React.Component {
       id: new Date().getTime()
     };
 
-    this.setState({ items: [...this.state.items, newItem] });
+    this.setState({ items: [...this.state.items, newItem] });   // spread: newItem geht in this.state.items-array
   };
 
   // componentDidMount() {
@@ -119,24 +134,24 @@ class MainContainer extends React.Component {
     const todones = data.filter(el => el.status);
     // const todos = data.filter(el => {if (!el.status) return el;});
 
-    
+
     return (
       <main className="main-container">
         <FormContainer addTodo={this.handleAddTodo}></FormContainer>
         {this.state.loading ? (
           <Spinner></Spinner>
         ) : (
-          <span>
-            <ToDosContainer
-              items={todos}
-              updateFromChild={this.handleUpdate}
-            ></ToDosContainer>
-            <ToDonesContainer
-              items={todones}
-              updateFromChild={this.handleUpdate}
-            ></ToDonesContainer>
-          </span>
-        )}
+            <span>
+              <ToDosContainer
+                items={todos}
+                updateFromChild={this.handleUpdate}
+              ></ToDosContainer>
+              <ToDonesContainer
+                items={todones}
+                updateFromChild={this.handleUpdate}
+              ></ToDonesContainer>
+            </span>
+          )}
       </main>
     );
   }
