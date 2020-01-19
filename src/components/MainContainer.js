@@ -59,18 +59,19 @@ class MainContainer extends React.Component {
       showFriend: false
     };
   }
-
+  
+  
   async componentDidMount() {
     const url = `https://todolist.platteantje.now.sh/tasks`;
-
+    
     // fetch(url).then(response => {
-    //   response.json().then(data => {
-    //     this.setState({ items: data });
-    //   });
-    // });
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
+      //   response.json().then(data => {
+        //     this.setState({ items: data });
+        //   });
+        // });
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
 
       if (data.length === 0)
         {
@@ -108,8 +109,10 @@ class MainContainer extends React.Component {
         },
         body: JSON.stringify({ done })
       });
-      const data = await response.json();
+
+      // const data = await response.json();
       const items = this.state.items;
+
       const updatedItems = items.map(el => {
         if (item._id === el._id) {         // ?? ganze Kette,   in todoscontainer, kommt von todoitem, bei onclick
           el.done = !el.done;  // wie toggle
@@ -199,7 +202,7 @@ render() {
         </span>
       ) : (
         <div className="empty-screen">
-          <img src={friend}></img>
+          <img src={friend} alt="little dog"></img>
           <p>Use the form to create a new todo!</p>
         </div>
       )}
