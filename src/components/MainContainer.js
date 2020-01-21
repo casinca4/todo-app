@@ -3,7 +3,7 @@ import FormContainer from './FormContainer';
 import ToDosContainer from './ToDosContainer';
 import ToDonesContainer from './ToDonesContainer';
 import Spinner from './Spinner';
-import friend from '../images/friend.jpeg';
+import NotFound from './NotFound';
 
 // function MainContainer() {
 //   const data = [
@@ -50,7 +50,7 @@ import friend from '../images/friend.jpeg';
 //   }
 
 class MainContainer extends React.Component {
-  constructor(props) {
+  constructor(props) {      // can pass to children oder parent by event handler
     super(props);
     this.state = {
       items: [],
@@ -59,24 +59,23 @@ class MainContainer extends React.Component {
       showFriend: false
     };
   }
-  
-  
+
+
   async componentDidMount() {
     const url = `https://todolist.platteantje.now.sh/tasks`;
-    
-    // fetch(url).then(response => {
-      //   response.json().then(data => {
-        //     this.setState({ items: data });
-        //   });
-        // });
-        try {
-          const response = await fetch(url);
-          const data = await response.json();
 
-      if (data.length === 0)
-        {
-          this.setState({
-          items: data,
+    // fetch(url).then(response => {
+    //   response.json().then(data => {
+    //     this.setState({ items: data });
+    //   });
+    // });
+    try {
+      const response = await fetch(url);
+      const data = await response.json();     // once he fechs the date, it turns into json; 
+
+      if (data.length === 0) {
+        this.setState({
+          items: data,      // wenn es data gibt, dann gehen die in array von oben, in dem Fall leer
           loading: false,   //  get todos back and load into app; loading button hört auf
           feedback: false,
           showFriend: true
@@ -96,26 +95,26 @@ class MainContainer extends React.Component {
   }
 
 
-  handleUpdate = async item => {                // frontend part
+  handleUpdate = async item => {                // frontend part ; create or delete todo           
     const url = `https://todolist.platteantje.now.sh/tasks/${item._id}`;
-    const done = !item.done;
+    const done = !item.done;                // wieso ! ?? ist wie toggle
     this.setState({ loading: true });
 
     try {
       const response = await fetch(url, {
-        method: 'PUT',
+        method: 'PUT',              // update
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json'        // convention
         },
-        body: JSON.stringify({ done })
+        body: JSON.stringify({ done })        // stringify boolean, weil man es mit fetch so macht
       });
 
-      // const data = await response.json();
-      const items = this.state.items;
+      const data = await response.json();     // data is not used????????  data brauchen wir nicht, aber response
+      const items = this.state.items;     
 
-      const updatedItems = items.map(el => {
-        if (item._id === el._id) {         // ?? ganze Kette,   in todoscontainer, kommt von todoitem, bei onclick
-          el.done = !el.done;  // wie toggle
+      const updatedItems = items.map(el => {    // items: todos and todones
+        if (item._id === el._id) {         // ?? ganze Kette,   in todoscontainer, kommt von todoitem, bei onclick; 
+          el.done = !el.done;  // wie toggle; wenn es todo ist, wird es zu todone; if ...., then I change
         }
 
         return el;
@@ -146,7 +145,7 @@ class MainContainer extends React.Component {
       });
       const item = await response.json();
       this.setState({
-        items: [...this.state.items, item],       // spread: newItem geht in this.state.items-array
+        items: [...this.state.items, item],       // spread: newItem geht in this.state.items-array; ...: alles, was da war, + die, die ich poste (item)
         feedback: false,
         showFriend: false,
         loading: false
@@ -157,58 +156,55 @@ class MainContainer extends React.Component {
   };
 
 
-// componentDidMount() {
-//   console.log('componentDidMount RUN');
-//   const url = 'https://ds-todo-api.now.sh/todos';
+  // componentDidMount() {
+  //   console.log('componentDidMount RUN');
+  //   const url = 'https://ds-todo-api.now.sh/todos';
 
-// }
+  // }
 
-// componentDidUpdate() {
-//   console.log('componentDidUpdate RUN');
-// }
+  // componentDidUpdate() {
+  //   console.log('componentDidUpdate RUN');
+  // }
 
-// componentWillUnmount() {
-//   debugger;
-// }
+  // componentWillUnmount() {
+  //   debugger;
+  // }
 
-render() {
-  console.log('render RUN');
+  render() {                      // setting global variables für return
+    // console.log('render RUN');
 
-  const data = this.state.items;
-  const todos = data.filter(el => !el.done);
-  const todones = data.filter(el => el.done);
-  // const todos = data.filter(el => {if (!el.done) return el;});
+    const data = this.state.items;        // items: array of all todos and todones
+    const todos = data.filter(el => !el.done);
+    const todones = data.filter(el => el.done);
+    // const todos = data.filter(el => {if (!el.done) return el;});
 
 
-  return (
-    <main className="main-container">
-      <FormContainer addTodo={this.handleAddTodo}></FormContainer>
-      <div className="feedback">
-        {this.state.feedback && (
-          <small>Oops, our cat broke the internet. Please try again...</small>
-        )}
-      </div>
-      {this.state.loading && <Spinner></Spinner>}
-      {!this.state.showFriend ? (             // it's not ...
-        <span>
-          <ToDosContainer
-            items={todos}
-            updateFromChild={this.handleUpdate}
-          ></ToDosContainer>
-          <ToDonesContainer
-            items={todones}
-            updateFromChild={this.handleUpdate}
-          ></ToDonesContainer>
-        </span>
-      ) : (
-        <div className="empty-screen">
-          <img src={friend} alt="little dog"></img>
-          <p>Use the form to create a new todo!</p>
+    return (
+      <main className="main-container">
+        <FormContainer addTodo={this.handleAddTodo}></FormContainer>
+        <div className="feedback">
+          {this.state.feedback && (     // if feedback true, display message
+            <small>Oops, our cat broke the internet. Please try again...</small>
+          )}
         </div>
-      )}
-    </main>
-  );
-}
+        {this.state.loading && <Spinner></Spinner>}
+        {!this.state.showFriend ? (             // it's not ... if showfriend is false, show span
+          <span>
+            <ToDosContainer
+              items={todos}
+              updateFromChild={this.handleUpdate}   // updateFromChild ist in ToDosContainer, entspricht handleUpdate function
+            ></ToDosContainer>
+            <ToDonesContainer
+              items={todones}
+              updateFromChild={this.handleUpdate}
+            ></ToDonesContainer>
+          </span>
+        ) : (
+            <NotFound></NotFound>
+          )}
+      </main>
+    );
+  }
 }
 
 

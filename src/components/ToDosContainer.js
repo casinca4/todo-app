@@ -1,6 +1,5 @@
 import React from 'react';
 import ToDoItem from './ToDoItem';
-import friend from '../images/friend.jpeg';
 
 // function ToDosContainer(props) {
 //     const data = props.items;
@@ -38,7 +37,7 @@ class ToDosContainer extends React.Component {
         <ToDoItem
           key={el._id}                          // _ von mongoose, s. Link
           data={el}                               // look in the database
-          handleUpdate={this.updateItem}
+          handleUpdate={this.updateItem}      // in ToDoItem handleUpdate = updateItem function hier
         ></ToDoItem>
       );
     });
