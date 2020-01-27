@@ -1,33 +1,21 @@
 import React from 'react';
+import { updateTodo } from '../actions';
+import { connect } from 'react-redux';
 
 const ToDoItem = props => {
-  function updateItem(e) {
-    e.preventDefault();         // wozu???? when you update the thing, don't pop up a new tab
-    const item = props.data;    // in props ist ein key data: console.log(props);
-
-    props.handleUpdate(item);
-  }
-
   return (
     <div className="item">
-      <p>{props.data.task}</p>
-      <button className="btn" onClick={updateItem}>
-        {props.data.done ? '☑' : '☐'}
+      <p>{props.data.text}</p>
+      <button className="btn" onClick={() => props.updateTodo(props.data)}>
+        {props.data.status ? '☑' : '☐'}
       </button>
     </div>
   );
 };
 
+const mapStateToProps = state => {
+  return state;
+};
 
-// function ToDoItem(props) {
-//   // props.task
-//   // props.done
-//   return (
-//     <div className="item">
-//       <p>{props.task}</p>
-//       <button className="btn">CHECK</button>
-//     </div>
-//   );
-// }
-
-export default ToDoItem;
+export default connect(mapStateToProps, { updateTodo })(ToDoItem);
+//export default ToDoItem;
