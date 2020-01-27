@@ -39,19 +39,23 @@ const initialState = {
 };
 
 const todoReducer = (state = initialState, action) => {
+  // console.log(action.payload);
+  // console.log(action.type);
+  
   if (action.type === 'UPDATE_TODO') {
-    const items = state.items.map(el => {
+    
+    const items = state.items.map(el => {       // el von dem array hier
       if (el._id === action.payload._id) {
-        el.status = !el.status;
+        el.status = !el.status;                 // von todo zu todone und umgekehrt
       }
 
-      return el;
+      return el;        // when you find el wenn beide gleich, nciht continue
     });
 
-    return { items: items };
+    return { items: items };    // und dann return items, updated with status of element that I clicked
   }
 
-  return { ...state };
+  return { ...state };          // dann return all the states updated, hier nur item
 };
 
 export default todoReducer;
