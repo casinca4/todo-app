@@ -36,6 +36,8 @@ class MainContainer extends React.Component {
   // }
 
   render() {
+    // console.log(this.props);
+    
     return (
       <main className="main-container">
         <FormContainer addTodo={this.handleAddTodo}></FormContainer>

@@ -38,7 +38,7 @@ const initialState = {
   ]
 };
 
-const todoReducer = (state = initialState, action) => {
+const todoReducer = (state = initialState, action) => {     // action triggers the reducer automatically
   // console.log(action.payload);
   // console.log(action.type);
   
@@ -49,13 +49,26 @@ const todoReducer = (state = initialState, action) => {
         el.status = !el.status;                 // von todo zu todone und umgekehrt
       }
 
-      return el;        // when you find el wenn beide gleich, nciht continue
+      return el;        // when you find el wenn beide gleich, nicht continue
     });
 
     return { items: items };    // und dann return items, updated with status of element that I clicked
   }
 
-  return { ...state };          // dann return all the states updated, hier nur item
+  if (action.type === 'ADD_TODO') {
+    const newItem = {
+      status: false,
+      _id: new Date().getTime(),
+      text: action.payload,
+      date: '2020-01-26T20:52:04.184Z',
+      __v: 0
+    };
+
+    state.items.push(newItem);
+    return Object.assign({}, state);
+  }
+  
+  return { ...state };          // dann return all the states updated, hier nur item; copy of state, man braucht pure function; { state, ... }; ... macht copy of first guy; copy as we don't want to return the initial state; we cannot return the real one
 };
 
 export default todoReducer;

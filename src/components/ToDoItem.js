@@ -3,6 +3,8 @@ import { updateTodo } from '../actions';
 import { connect } from 'react-redux';
 
 const ToDoItem = props => {
+  console.log(props);       // object mit data, items (state that comes from mapstate). updateTodo (method)
+  
   return (
     <div className="item">
       <p>{props.data.text}</p>
